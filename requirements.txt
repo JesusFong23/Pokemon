@@ -2,14 +2,5 @@ pandas
 seaborn
 numpy
 matplotlib
-pydeck
-black
-flake8
-isort
-loguru
-mkdocs
-pip
-python-dotenv
-tqdm
-typer
--e .
+scikit-learn
+
