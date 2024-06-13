@@ -31,7 +31,7 @@ def login():
 # Load the dataset using st.cache
 @st.cache  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv("data/raw/Pokemon_with_images.csv")  # Adjust the path as necessary
+    return pd.read_csv("Pokemon_with_images.csv")  # Assumes Pokemon_with_images.csv is in the same directory as app.py
 
 # Pikachu mini-game page
 def pikachu_game():
@@ -151,3 +151,4 @@ def main():
 # Run the app
 if __name__ == "__main__":
     main()
+
