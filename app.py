@@ -16,7 +16,7 @@ def login():
 # Load the dataset
 @st.cache_data()  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv("Pokemon_with_images.csv")
+    return pd.read_csv("/Users/jesusfong/itd2024/data/raw/Pokemon_with_images.csv")
 
 # Main function
 def main():
@@ -32,45 +32,47 @@ def main():
     # Load the dataset
     df = load_data()
 
-    # Display opponent's Pokémon
-    if "opponent_pokemon" not in st.session_state:
+    # Reset functionality to refresh opponent's Pokémon and user's options
+    if "opponent_pokemon" not in st.session_state or st.button("Reset"):
         st.session_state.opponent_pokemon = df.sample(n=1)
+        st.session_state.user_pokemon_choices = df.sample(n=5)
+        if "user_pokemon" in st.session_state:
+            del st.session_state["user_pokemon"]
+
     opponent_pokemon = st.session_state.opponent_pokemon
     st.write("Opponent's Pokémon:")
     st.image(opponent_pokemon['Image URL'].values[0], width=200)
     st.write(opponent_pokemon[['Name', 'HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']])
 
-    # Reset button
-    if st.button("Reset"):
-        st.session_state.opponent_pokemon = df.sample(n=1)
-        st.experimental_rerun()
-
-    # Select the user's Pokémon
     st.write("Choose your Pokémon:")
-    user_pokemon_name = st.selectbox("Select your Pokémon", [""] + df['Name'].tolist())
+    user_pokemon_choices = st.session_state.user_pokemon_choices
 
-    if user_pokemon_name:
-        user_pokemon = df[df['Name'] == user_pokemon_name]
-        st.image(user_pokemon['Image URL'].values[0], width=200)
+    col1, col2, col3, col4, col5 = st.columns(5)
+    for idx, col in enumerate([col1, col2, col3, col4, col5]):
+        pokemon = user_pokemon_choices.iloc[idx]
+        if col.button(pokemon['Name']):
+            st.session_state.user_pokemon = pokemon
 
-    # Fight button centered
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        if user_pokemon_name != "" and st.button("Fight"):
-            if user_pokemon.empty:
-                st.write("Sorry, that Pokémon is not found in the dataset.")
-            else:
+    if "user_pokemon" in st.session_state:
+        user_pokemon = st.session_state.user_pokemon
+        st.image(user_pokemon['Image URL'], width=200)
+        st.write(user_pokemon[['Name', 'HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']])
+
+        # Fight button centered
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            if st.button("Fight"):
                 # Get the stats of user's and opponent's Pokémon
-                user_pokemon_stats = user_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values[0]
-                opponent_pokemon_stats = opponent_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values[0]
+                user_pokemon_stats = user_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values.flatten()
+                opponent_pokemon_stats = opponent_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values.flatten()
 
                 # Calculate the total stats for each Pokémon
-                user_total_stats = sum(user_pokemon_stats)
-                opponent_total_stats = sum(opponent_pokemon_stats)
+                user_total_stats = user_pokemon_stats.sum()
+                opponent_total_stats = opponent_pokemon_stats.sum()
 
                 # Determine the winner based on total stats
                 st.write("Results:")
-                st.write(f"Your Pokémon: {user_pokemon_name}")
+                st.write(f"Your Pokémon: {user_pokemon['Name']}")
                 st.write(f"Opponent's Pokémon: {opponent_pokemon['Name'].values[0]}")
                 if user_total_stats > opponent_total_stats:
                     st.write("You win! 🎉")
@@ -85,7 +87,7 @@ def main():
                 fig, axes = plt.subplots(2, 1, figsize=(8, 6))
                 stats_df = pd.DataFrame({'Stats': ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'],
                                          'Your Pokémon': user_pokemon_stats,
-                                         "Opponent's Pokémon": opponent_pokemon_stats})
+                                         "Opponent's Pokémon": opponent_pokemon_stats.flatten()})
                 stats_df.set_index('Stats', inplace=True)
                 stats_df.plot(kind='bar', ax=axes[0])
                 axes[0].set_ylabel('Stats')
