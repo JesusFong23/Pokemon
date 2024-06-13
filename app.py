@@ -2,9 +2,20 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Create a login page
+# Create a login page with instructions and an image
 def login():
-    st.title("Login")
+    st.title("Welcome to Pokémon Battle!")
+    
+    # Add the image to the login page
+    st.image("https://4kwallpapers.com/images/walls/thumbs_2t/16032.jpg", use_column_width=True)
+    
+    st.write("### How to Play:")
+    st.write("1. 🆚 **View the Opponent:** See which Pokémon you're up against.")
+    st.write("2. 🔍 **Choose Your Pokémon:** Pick one of the five random Pokémon.")
+    st.write("3. 📊 **Check the Stats:** Compare your Pokémon's stats with your opponent's.")
+    st.write("4. ⚔️ **Fight!**: Click the Fight button and see who wins!")
+    st.write("Good luck, Trainer! 🍀")
+
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
@@ -102,6 +113,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
