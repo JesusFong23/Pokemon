@@ -4,6 +4,9 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Disable deprecated warning for st.pyplot() usage
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
 # Load the RandomForestClassifier model
 model_path = "pokemon_rf_model.pkl"  # Update to point directly to the model file
 rf_classifier = joblib.load(model_path)
@@ -155,13 +158,17 @@ def main():
                     stats_df_melted = stats_df.melt(id_vars='Stats', var_name='Pokemon', value_name='Value')
 
                     # Plot using Seaborn barplot
-                    plt.figure(figsize=(10, 6))
-                    sns.barplot(x='Stats', y='Value', hue='Pokemon', data=stats_df_melted, palette='viridis')
-                    plt.title("Comparison of Pokémon Stats")
-                    plt.xlabel("Stats")
-                    plt.ylabel("Value")
-                    plt.legend(title='Pokemon')
-                    st.pyplot()
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                    sns.barplot(x='Stats', y                    # Plot using Seaborn barplot
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                    sns.barplot(x='Stats', y='Value', hue='Pokemon', data=stats_df_melted, palette='viridis', ax=ax)
+                    ax.set_title("Comparison of Pokémon Stats")
+                    ax.set_xlabel("Stats")
+                    ax.set_ylabel("Value")
+                    ax.legend(title='Pokemon')
+
+                    # Display the plot using Streamlit
+                    st.pyplot(fig)
 
                     # Add a link to Pikachu's mini-game
                     st.markdown("<a href='?page=pikachu'>Play Pikachu's Mini-Game</a>", unsafe_allow_html=True)
@@ -176,3 +183,5 @@ def main():
 # Run the app
 if __name__ == "__main__":
     main()
+
+
