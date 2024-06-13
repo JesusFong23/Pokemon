@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Load the RandomForestClassifier model
 model_path = "pokemon_rf_model.pkl"  # Update to point directly to the model file
@@ -138,6 +140,21 @@ def main():
                         st.image("https://media1.giphy.com/media/xx0JzzsBXzcMK542tx/giphy.gif?cid=6c09b952thbre9f6i9xkv790skz1sz5czdly9u2hh8n8nbx0&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g", width=200)
                     else:
                         st.image("https://media1.giphy.com/media/dJYoOVAWf2QkU/giphy.gif?cid=6c09b952pifrrs3solvj7iq41nwhxf0vv5rsuwppptjn8ilz&ep=v1_gifs_search&rid=giphy.gif&ct=g", width=200)
+
+                    # Show why the Pokémon won or lost
+                    st.write("Comparison of Stats:")
+                    stats_df = pd.DataFrame({
+                        'Stats': ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'],
+                        user_pokemon['Name']: user_pokemon_stats,
+                        opponent_pokemon['Name'].values[0]: opponent_pokemon_stats
+                    })
+
+                    plt.figure(figsize=(10, 6))
+                    sns.barplot(x='Stats', y=user_pokemon['Name'], data=stats_df, color='blue', alpha=0.6, label=user_pokemon['Name'])
+                    sns.barplot(x='Stats', y=opponent_pokemon['Name'].values[0], data=stats_df, color='red', alpha=0.6, label=opponent_pokemon['Name'])
+                    plt.title('Comparison of Stats')
+                    plt.legend()
+                    st.pyplot(plt)
 
                     # Add a link to Pikachu's mini-game
                     st.markdown("<a href='?page=pikachu'>Play Pikachu's Mini-Game</a>", unsafe_allow_html=True)
