@@ -172,4 +172,3 @@ def main():
     elif page == 'pikachu':
         pikachu_game()
         st.markdown("<a href='?page=main'>Back to Main Game</a>", unsafe_allow_html=True)
-
