@@ -159,7 +159,7 @@ def main():
 
                     # Plot using Seaborn barplot
                     fig, ax = plt.subplots(figsize=(10, 6))
-                    sns.barplot(x='Stats', y                    # Plot using Seaborn barplot
+                    sns.barplot(x='Stats', y)                    # Plot using Seaborn barplot
                     fig, ax = plt.subplots(figsize=(10, 6))
                     sns.barplot(x='Stats', y='Value', hue='Pokemon', data=stats_df_melted, palette='viridis', ax=ax)
                     ax.set_title("Comparison of Pokémon Stats")
