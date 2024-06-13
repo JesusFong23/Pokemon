@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import joblib
 
 # Load the RandomForestClassifier model
-model_path = "/Users/jesusfong/itd2024/notebooks/pokemon_rf_model.pkl"
+model_path = "pokemon_rf_model.pkl"
 rf_classifier = joblib.load(model_path)
 
 # Create a login page with instructions and an image
@@ -32,7 +32,7 @@ def login():
 # Load the dataset using st.cache_data
 @st.cache_data  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv("Pokemon_with_images.csv")
+    return pd.read_csv("/Users/jesusfong/itd2024/data/raw/Pokemon_with_images.csv")
 
 # Pikachu mini-game page
 def pikachu_game():
@@ -157,3 +157,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
