@@ -16,7 +16,7 @@ def login():
 # Load the dataset
 @st.cache_data()  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv("/Users/jesusfong/itd2024/data/raw/Pokemon_with_images.csv")
+    return pd.read_csv("Pokemon_with_images.csv")
 
 # Main function
 def main():
