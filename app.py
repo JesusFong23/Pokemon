@@ -1,11 +1,9 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import joblib
-import os
 
 # Load the RandomForestClassifier model
-model_path = os.path.join("models", "pokemon_rf_model.pkl")
+model_path = "pokemon_rf_model.pkl"  # Update to point directly to the model file
 rf_classifier = joblib.load(model_path)
 
 # Create a login page with instructions and an image
@@ -30,10 +28,10 @@ def login():
         else:
             st.error("Invalid username or password")
 
-# Load the dataset using st.cache_data
-@st.cache_data  # Cache the dataset for better performance
+# Load the dataset using st.cache
+@st.cache  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv(os.path.join("data", "raw", "Pokemon_with_images.csv"))
+    return pd.read_csv("data/raw/Pokemon_with_images.csv")  # Adjust the path as necessary
 
 # Pikachu mini-game page
 def pikachu_game():
