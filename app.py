@@ -6,7 +6,7 @@ import os
 
 # Load the RandomForestClassifier model
 model_path = os.path.join("models", "pokemon_rf_model.pkl")
-rf_classifier = joblib.load(pokemon_rf_model.pkl)
+rf_classifier = joblib.load(model_path)
 
 # Create a login page with instructions and an image
 def login():
@@ -153,4 +153,3 @@ def main():
 # Run the app
 if __name__ == "__main__":
     main()
-
