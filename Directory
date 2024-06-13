@@ -1,0 +1,10 @@
+your-repo/
+│
+├── app.py
+├── data/
+│   └── raw/
+│       └── Pokemon_with_images.csv
+├── models/
+│   └── pokemon_rf_model.pkl
+├── requirements.txt
+└── .gitignore
