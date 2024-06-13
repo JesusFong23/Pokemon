@@ -143,21 +143,29 @@ def main():
 
                     # Show why the Pokémon won or lost
                     st.write("Comparison of Stats:")
+                    
+                    # Prepare stats data for plotting
                     stats_df = pd.DataFrame({
                         'Stats': ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'],
                         user_pokemon['Name']: user_pokemon_stats,
                         opponent_pokemon['Name'].values[0]: opponent_pokemon_stats
                     })
 
+                    # Melt the DataFrame for Seaborn barplot
+                    stats_df_melted = stats_df.melt(id_vars='Stats', var_name='Pokemon', value_name='Value')
+
+                    # Plot using Seaborn barplot
                     plt.figure(figsize=(10, 6))
-                    sns.barplot(x='Stats', y=user_pokemon['Name'], data=stats_df, color='blue', alpha=0.6, label=user_pokemon['Name'])
-                    sns.barplot(x='Stats', y=opponent_pokemon['Name'].values[0], data=stats_df, color='red', alpha=0.6, label=opponent_pokemon['Name'])
-                    plt.title('Comparison of Stats')
-                    plt.legend()
-                    st.pyplot(plt)
+                    sns.barplot(x='Stats', y='Value', hue='Pokemon', data=stats_df_melted, palette='viridis')
+                    plt.title("Comparison of Pokémon Stats")
+                    plt.xlabel("Stats")
+                    plt.ylabel("Value")
+                    plt.legend(title='Pokemon')
+                    st.pyplot()
 
                     # Add a link to Pikachu's mini-game
                     st.markdown("<a href='?page=pikachu'>Play Pikachu's Mini-Game</a>", unsafe_allow_html=True)
+
         else:
             st.write("Please choose your Pokémon to start the battle.")
 
@@ -168,4 +176,3 @@ def main():
 # Run the app
 if __name__ == "__main__":
     main()
-
