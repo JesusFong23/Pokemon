@@ -141,21 +141,12 @@ def main():
                     else:
                         st.image("https://media1.giphy.com/media/dJYoOVAWf2QkU/giphy.gif?cid=6c09b952pifrrs3solvj7iq41nwhxf0vv5rsuwppptjn8ilz&ep=v1_gifs_search&rid=giphy.gif&ct=g", width=200)
 
-                    # Visualize feature importances
-                    feature_importances = rf_classifier.feature_importances_
-                    stats_labels = ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']
-                    
-                    fig, ax = plt.subplots()
-                    ax.bar(stats_labels, feature_importances)
-                    ax.set_ylabel('Importance')
-                    ax.set_title('Feature Importances')
+                    # Add a link to Pikachu's mini-game
+                    st.markdown("<a href='?page=pikachu'>Play Pikachu's Mini-Game</a>", unsafe_allow_html=True)
+        else:
+            st.write("Please choose your Pokémon to start the battle.")
 
-                    st.pyplot(fig)
-
-        st.markdown("<a href='?page=pikachu_game'>Go to Pikachu Mini Game</a>", unsafe_allow_html=True)
-
-    elif page == 'pikachu_game':
-        # Display Pikachu mini-game page
+    elif page == 'pikachu':
         pikachu_game()
         st.markdown("<a href='?page=main'>Back to Main Game</a>", unsafe_allow_html=True)
 
