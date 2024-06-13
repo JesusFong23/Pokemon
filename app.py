@@ -4,9 +4,6 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Disable deprecated warning for st.pyplot() usage
-st.set_option('deprecation.showPyplotGlobalUse', False)
-
 # Load the RandomForestClassifier model
 model_path = "pokemon_rf_model.pkl"  # Update to point directly to the model file
 rf_classifier = joblib.load(model_path)
@@ -81,8 +78,8 @@ def main():
 
     # Reset functionality to refresh opponent's Pokémon and user's options
     if "opponent_pokemon" not in st.session_state or st.button("Reset"):
-        st.session_state.opponent_pokemon = df.sample(n=1)
-        st.session_state.user_pokemon_choices = df.sample(n=5)
+        st.session_state.opponent_pokemon = df.sample(n=1).reset_index(drop=True)
+        st.session_state.user_pokemon_choices = df.sample(n=5).reset_index(drop=True)
         if "user_pokemon" in st.session_state:
             del st.session_state["user_pokemon"]
 
@@ -158,8 +155,6 @@ def main():
                     stats_df_melted = stats_df.melt(id_vars='Stats', var_name='Pokemon', value_name='Value')
 
                     # Plot using Seaborn barplot
-                    fig, ax = plt.subplots(figsize=(10, 6))
-                    sns.barplot(x='Stats', y)                    # Plot using Seaborn barplot
                     fig, ax = plt.subplots(figsize=(10, 6))
                     sns.barplot(x='Stats', y='Value', hue='Pokemon', data=stats_df_melted, palette='viridis', ax=ax)
                     ax.set_title("Comparison of Pokémon Stats")
