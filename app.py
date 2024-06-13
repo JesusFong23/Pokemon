@@ -32,7 +32,7 @@ def login():
 # Load the dataset using st.cache_data
 @st.cache_data  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv("Pokemon_with_images.csv")
+    return pd.read_csv("/Users/jesusfong/itd2024/data/raw/Pokemon_with_images.csv")
 
 # Pikachu mini-game page
 def pikachu_game():
@@ -118,24 +118,21 @@ def main():
                     opponent_pokemon_stats = opponent_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values.flatten()
 
                     # Predict the winner using RandomForestClassifier
-                    user_stats_for_prediction = user_pokemon_stats.reshape(1, -1)
-                    opponent_stats_for_prediction = opponent_pokemon_stats.reshape(1, -1)
+                    combined_stats = [list(user_pokemon_stats) + list(opponent_pokemon_stats)]
+                    prediction = rf_classifier.predict(combined_stats)[0]
 
-                    user_prediction = rf_classifier.predict(user_stats_for_prediction)[0]
-                    opponent_prediction = rf_classifier.predict(opponent_stats_for_prediction)[0]
-
-                    if user_prediction == 1:
-                        user_predicted_winner = "You win! 🎉"
+                    if prediction == 1:
+                        result = f"Your Pokémon {user_pokemon['Name']} wins! 🎉"
                     else:
-                        user_predicted_winner = "You lose! 😢"
+                        result = f"Opponent's Pokémon {opponent_pokemon['Name'].values[0]} wins! 😢"
 
                     st.write("Results:")
                     st.write(f"Your Pokémon: {user_pokemon['Name']}")
                     st.write(f"Opponent's Pokémon: {opponent_pokemon['Name'].values[0]}")
-                    st.write(f"Predicted Winner: {user_predicted_winner}")
+                    st.write(f"Predicted Winner: {result}")
 
                     # Display appropriate gif based on prediction
-                    if user_prediction == 1:
+                    if prediction == 1:
                         st.image("https://media1.giphy.com/media/xx0JzzsBXzcMK542tx/giphy.gif?cid=6c09b952thbre9f6i9xkv790skz1sz5czdly9u2hh8n8nbx0&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g", width=200)
                     else:
                         st.image("https://media1.giphy.com/media/dJYoOVAWf2QkU/giphy.gif?cid=6c09b952pifrrs3solvj7iq41nwhxf0vv5rsuwppptjn8ilz&ep=v1_gifs_search&rid=giphy.gif&ct=g", width=200)
@@ -154,10 +151,9 @@ def main():
         st.markdown("<a href='?page=pikachu_game'>Go to Pikachu Mini Game</a>", unsafe_allow_html=True)
 
     elif page == 'pikachu_game':
-        # Display Pikachu mini-game page
+        # Display Pikachu mini-game content
         pikachu_game()
-
-        st.markdown("<a href='?page=main'>Go back to Pokémon Battle</a>", unsafe_allow_html=True)
+        st.markdown("<a href='?page=main'>Back to Main Game</a>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
