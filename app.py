@@ -1,6 +1,11 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import joblib
+
+# Load the RandomForestClassifier model
+model_path = "/Users/jesusfong/itd2024/notebooks/pokemon_rf_model.pkl"
+rf_classifier = joblib.load(model_path)
 
 # Create a login page with instructions and an image
 def login():
@@ -24,10 +29,10 @@ def login():
         else:
             st.error("Invalid username or password")
 
-# Load the dataset
+# Load the dataset using st.cache_data
 @st.cache_data  # Cache the dataset for better performance
 def load_data():
-    return pd.read_csv("Pokemon_with_images.csv")
+    return pd.read_csv("/Users/jesusfong/itd2024/data/raw/Pokemon_with_images.csv")
 
 # Pikachu mini-game page
 def pikachu_game():
@@ -112,37 +117,37 @@ def main():
                     user_pokemon_stats = user_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values.flatten()
                     opponent_pokemon_stats = opponent_pokemon[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']].values.flatten()
 
-                    # Calculate the total stats for each Pokémon
-                    user_total_stats = user_pokemon_stats.sum()
-                    opponent_total_stats = opponent_pokemon_stats.sum()
+                    # Predict the winner using RandomForestClassifier
+                    user_stats_for_prediction = user_pokemon_stats.reshape(1, -1)
+                    opponent_stats_for_prediction = opponent_pokemon_stats.reshape(1, -1)
 
-                    # Determine the winner based on total stats
+                    user_prediction = rf_classifier.predict(user_stats_for_prediction)[0]
+                    opponent_prediction = rf_classifier.predict(opponent_stats_for_prediction)[0]
+
+                    if user_prediction == 1:
+                        user_predicted_winner = "You win! 🎉"
+                    else:
+                        user_predicted_winner = "You lose! 😢"
+
                     st.write("Results:")
                     st.write(f"Your Pokémon: {user_pokemon['Name']}")
                     st.write(f"Opponent's Pokémon: {opponent_pokemon['Name'].values[0]}")
-                    if user_total_stats > opponent_total_stats:
-                        st.write("You win! 🎉")
+                    st.write(f"Predicted Winner: {user_predicted_winner}")
+
+                    # Display appropriate gif based on prediction
+                    if user_prediction == 1:
                         st.image("https://media1.giphy.com/media/xx0JzzsBXzcMK542tx/giphy.gif?cid=6c09b952thbre9f6i9xkv790skz1sz5czdly9u2hh8n8nbx0&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g", width=200)
-                    elif user_total_stats < opponent_total_stats:
-                        st.write("You lose! 😢")
-                        st.image("https://media1.giphy.com/media/dJYoOVAWf2QkU/giphy.gif?cid=6c09b952pifrrs3solvj7iq41nwhxf0vv5rsuwppptjn8ilz&ep=v1_gifs_search&rid=giphy.gif&ct=g", width=200)
                     else:
-                        st.write("It's a tie! 🤝")
+                        st.image("https://media1.giphy.com/media/dJYoOVAWf2QkU/giphy.gif?cid=6c09b952pifrrs3solvj7iq41nwhxf0vv5rsuwppptjn8ilz&ep=v1_gifs_search&rid=giphy.gif&ct=g", width=200)
 
-                    # Visualize the stats
-                    fig, axes = plt.subplots(2, 1, figsize=(8, 6))
-                    stats_df = pd.DataFrame({'Stats': ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'],
-                                             'Your Pokémon': user_pokemon_stats,
-                                             "Opponent's Pokémon": opponent_pokemon_stats.flatten()})
-                    stats_df.set_index('Stats', inplace=True)
-                    stats_df.plot(kind='bar', ax=axes[0])
-                    axes[0].set_ylabel('Stats')
-                    axes[0].set_title('Comparison of Total Stats')
-
-                    # Add text to explain the results
-                    axes[1].axis('off')
-                    axes[1].text(0.5, 0.5, "Your Total Stats: {}\nOpponent's Total Stats: {}".format(user_total_stats, opponent_total_stats),
-                                 horizontalalignment='center', verticalalignment='center', fontsize=14)
+                    # Visualize feature importances
+                    feature_importances = rf_classifier.feature_importances_
+                    stats_labels = ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']
+                    
+                    fig, ax = plt.subplots()
+                    ax.bar(stats_labels, feature_importances)
+                    ax.set_ylabel('Importance')
+                    ax.set_title('Feature Importances')
 
                     st.pyplot(fig)
 
@@ -156,4 +161,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
